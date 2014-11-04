@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kerpun mod search</title>
+    <link href="styles.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="page-header">
+            <h1>Search for mods
+              <small>on CurseForge and KerbalStuff</small>
+            </h1>
+          </div>
+          <div class="input-group input-group-lg">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+            <input class="typeahead form-control" type="text" placeholder="Mod...">
+          </div>
+        </div>
+       </div>
+       <div class="row" id="releases"></div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.12.0/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+      "use strict";
+      var api_server = 'http://localhost:8080';
+      var mods = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+          url: api_server + '/search/%QUERY',
+          ajax: {
+            beforeSend: function () {
+              $('.input-group-addon i').addClass('text-info');
+              return true;
+            },
+            complete: function () {
+              $('.input-group-addon i').removeClass('text-info');
+              return true;
+            }
+          },
+        }
+      });
+
+      mods.initialize();
+
+      $('.typeahead').typeahead(null, {
+        name: 'mods',
+        displayKey: function (s) { return s.name + ' - ' + s.provider; },
+        source: mods.ttAdapter(),
+        minLength: 3,
+      })
+      .on('typeahead:selected', function (jqEvent, suggestion, dataset) {
+        console.log(suggestion);
+        $.getJSON(api_server + suggestion.releases_url, function (data) {
+          $('#releases').html(JSON.stringify(data));
+        }.bind(this));
+      });
+    });
+    </script>
+  </body>
+</html>

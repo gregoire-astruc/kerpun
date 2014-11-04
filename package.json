@@ -1,0 +1,29 @@
+{
+  "name": "kerpun",
+  "version": "0.0.0",
+  "description": "Kerbal packages web interface.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "bower install && lessc styles.less public/styles.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gregoire-astruc/kerpun"
+  },
+  "keywords": [
+    "kerbal",
+    "kerpun",
+    "ksp"
+  ],
+  "author": "Gregoire Astruc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gregoire-astruc/kerpun/issues"
+  },
+  "dependencies": {
+    "node-static": "~0.7.6",
+    "less": "~1.7.5",
+    "bower": "~1.3.12"
+  }
+}
